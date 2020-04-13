@@ -1,0 +1,89 @@
+---
+title: "Diamonds"
+author: "Rita Raher"
+date: "4/13/2020"
+output: rmarkdown::github_document
+        
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+if (!require("dplyr")) install.packages("dplyr"); library(dplyr)
+if (!require("ggplot2")) install.packages("ggplot2"); library(ggplot2)
+if (!require("GGally")) install.packages("GGally"); library(GGally)
+
+
+```
+
+## R Markdown
+
+For this analysis, I will use the diamonds dataset freely available in R.
+https://ggplot2.tidyverse.org/reference/diamonds.html
+
+Libraries: 
+- ggplot
+- dplyr
+- GGally
+
+### Data Exploration
+```{r diamonds head}
+head(diamonds)
+```
+
+```{r diamonds summary}
+summary(diamonds)
+```
+
+## Including Plots
+
+
+```{r diamond cut, echo=FALSE}
+unique(diamonds$cut)
+
+```
+
+```{r diamond plot, echo=FALSE}
+
+diamonds %>% 
+ggplot(aes(carat, price, color =cut)) + 
+  geom_point() +
+  scale_y_log10() 
+
+```
+
+```{r diamond plot facet, echo=FALSE}
+
+diamonds %>% 
+ggplot(aes(carat, price, color =cut)) + 
+  geom_point() +
+  scale_y_log10() +
+  facet_wrap(~cut) +
+  ggtitle("Diamond carat by price ")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r diamond correlation, echo=FALSE}
+
+ggcorr(diamonds, method = c("everything", "pearson")) 
+
+```
+
+Turning levels 'cut', 'color', 'clarity' in numeric values to see if there is a correlation
+```{r diamond levels_to_numeric , echo=FALSE}
+
+
+diamonds$cut <- as.numeric(diamonds$cut)
+diamonds$color <- as.numeric(diamonds$color)
+diamonds$clarity <- as.numeric(diamonds$clarity)
+#ggpairs(diamonds, columns = 2:4, ggplot2::aes(colour=)) 
+
+```
+```{r diamond correlation_upgrade, echo=FALSE}
+
+ggcorr(diamonds, method = c("everything", "pearson")) 
+
+```
+
